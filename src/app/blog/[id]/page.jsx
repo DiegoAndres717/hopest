@@ -24,7 +24,7 @@ const BlogDetails = (ctx) => {
 
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState([]);
-
+  console.log(blogDetails)
   const { data: session, status } = useSession();
   const token = session?.user?.accessToken;
   const router = useRouter();
@@ -58,14 +58,9 @@ const BlogDetails = (ctx) => {
     session && fetchBlog();
   }, [ctx.params.id, session]);
 
-  
   if (status === "unauthenticated") {
     router.push("/");
     return;
-  }
-
-  if (status === "loading") {
-    return <LoadingModal />;
   }
 
   const handleDelete = async () => {
@@ -121,7 +116,6 @@ const BlogDetails = (ctx) => {
   };
 
   const handleComment = async () => {
-
     if (commentText?.length < 2) {
       toast.error("Comment must be at least 2 characters long");
       return;
@@ -157,13 +151,13 @@ const BlogDetails = (ctx) => {
       console.log(error);
     }
   };
-
+  
   return (
     <BlogLayout>
-      <div className="flex flex-col justify-center items-center">
-        {isLoading ? (
-          <LoadingModal />
-        ) : (
+      {isLoading ? (
+        <LoadingModal />
+      ) : (
+        <div className="flex flex-col justify-center items-center">
           <div className="card max-w-xl bg-base-100 shadow-xl mt-6">
             <figure>
               <Link href={`/blog/${ctx.params.id}`}>
@@ -183,7 +177,8 @@ const BlogDetails = (ctx) => {
                   {blogDetails?.title}
                   <div className="badge badge-secondary">NEW</div>
                 </h2>
-                {session?.user?._id && (
+                {blogDetails?.authorId?._id.toString() ===
+              session?.user?._id.toString() ? (
                   <div className={"flex justify-end items-end gap-x-2"}>
                     <Link
                       className={classes.editButton}
@@ -198,6 +193,10 @@ const BlogDetails = (ctx) => {
                       Delete
                       <AiFillDelete />
                     </button>
+                  </div>
+                ) : (
+                  <div className={classes.author}>
+                    Author: <span>{blogDetails?.authorId?.username}</span>
                   </div>
                 )}
               </div>
@@ -232,21 +231,9 @@ const BlogDetails = (ctx) => {
                   Posted: <span>{format(blogDetails?.createdAt)}</span>
                 </span>
               </div>
-
-              {blogDetails?.authorId?._id.toString() ===
-              session?.user?._id.toString() ? (
-                ""
-              ) : (
-                <div className={classes.author}>
-                  Author: <span>{blogDetails?.authorId?.username}</span>
-                </div>
-              )}
             </div>
           </div>
-        )}
-        {isLoading ? (
-          <LoadingModal />
-        ) : (
+
           <div
             className={
               "mx-auto mt-24 w-1/2 flex flex-col items-center justify-center border border-gray-700 rounded-xl"
@@ -259,7 +246,7 @@ const BlogDetails = (ctx) => {
             >
               <Image
                 className="object-cover rounded-full"
-                src={person}
+                src={comments?.imageUrl || '/../public/login.webp'}
                 width="45"
                 height="45"
                 alt=""
@@ -303,9 +290,9 @@ const BlogDetails = (ctx) => {
               )}
             </div>
           </div>
-        )}
-        <ToastContainer />
-      </div>
+          <ToastContainer />
+        </div>
+      )}
     </BlogLayout>
   );
 };

@@ -10,6 +10,7 @@ export async function GET(req, ctx){
 
     try {
         const comments = await Comment.find({blogId: id}).populate('authorId')
+                                                        .populate('blogId')
 
         return new Response(JSON.stringify(comments), {status: 200})
     } catch (error) {

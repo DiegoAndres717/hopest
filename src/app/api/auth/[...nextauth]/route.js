@@ -15,19 +15,17 @@ const handler = NextAuth({
                 password: {label: 'Password', type: 'password'}
             },
             async authorize(credentials, req){
+                
                 const {email, password} = credentials
 
                 await db.connect()
                                 
                 const user = await User.findOne({ email })
-
+               
                 if(!user){
                     throw new Error("Invalid input")
                 }
 
-                // 2 parameters -> 
-                // 1 normal password -> 123123
-                // 2 hashed password -> dasuytfygdsaidsaugydsaudsadsadsauads
                 const comparePass = await bcrypt.compare(password, user.password)
 
                 if(!comparePass){
@@ -39,6 +37,7 @@ const handler = NextAuth({
 
                     return {
                         ...currentUser,
+                        name: user.username,
                         accessToken
                     }
                 }
