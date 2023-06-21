@@ -17,12 +17,13 @@ const AuthSocialButton: FC<AuthSocialButtonProps> = ({
       className="
         inline-flex
         w-full 
+        mt-2
         justify-center 
         rounded-md 
         bg-white 
         px-4 
         py-2 
-        text-gray-500 
+        text-blue-400 
         shadow-sm 
         ring-1 
         ring-inset 

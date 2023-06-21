@@ -1,75 +1,107 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from 'next-auth/providers/credentials'
+import NextAuth from "next-auth/next";
+import prisma from '../../../../libs/prismadb'
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import User from "@/models/User";
-import { signJwtToken } from "@/libs/jwt";
 import bcrypt from 'bcrypt'
-import db from "@/libs/db";
+import { Auth } from "@auth/core"
+import jwt from "jsonwebtoken";
+import { signJwtToken } from "@/libs/jwt";
 
-const handler = NextAuth({
+export const authOptions = {
+    adapter: PrismaAdapter(prisma),
     providers: [
-        CredentialsProvider({
-            type: 'credentials',
-            credentials: {
-                username: {label: 'Email', type: 'text', placeholder: 'Diego Andres Salas'},
-                password: {label: 'Password', type: 'password'}
-            },
-            async authorize(credentials, req){
-                const {email, password} = credentials
-
-                await db.connect()
-                                
-                const user = await User.findOne({ email })
-
-                if(!user){
-                    throw new Error("Invalid input")
-                }
-
-                // 2 parameters -> 
-                // 1 normal password -> 123123
-                // 2 hashed password -> dasuytfygdsaidsaugydsaudsadsadsauads
-                const comparePass = await bcrypt.compare(password, user.password)
-
-                if(!comparePass){
-                    throw new Error("Invalid input")
-                } else {
-                    const {password, ...currentUser} = user._doc
-
-                    const accessToken = signJwtToken(currentUser, {expiresIn: '6d'})
-
-                    return {
-                        ...currentUser,
-                        accessToken
-                    }
-                }
-            }
-        }),
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            authorization: {
+                params: {
+                  prompt: "consent",
+                  access_type: "offline",
+                  response_type: "code"
+                }
+              }
         }),
+        CredentialsProvider({
+            name: "credentials",
+            credentials: {
+                email: { label: "Email", type: "text", placeholder: "jsmith" },
+                password: { label: "Password", type: "password" },
+                username: { label: "Username", type: "text", placeholder: "John Smith" },
+                
+            },
+            async authorize(credentials) {
+              
+                // check to see if email and password is there
+                if(!credentials.email || !credentials.password) {
+                    throw new Error('Please enter an email and password')
+                }
+
+                // check to see if user exists
+                const user = await prisma.user.findUnique({
+                    where: {
+                        email: credentials.email
+                    }
+                });
+
+                // if no user was found 
+                if (!user || !user?.hashedPassword) {
+                    throw new Error('No user found')
+                }
+
+                // check to see if password matches
+                const passwordMatch = await bcrypt.compare(credentials.password, user.hashedPassword)
+
+                // if password does not match
+                if (passwordMatch) {
+                    const accessToken = signJwtToken(
+                        { userId: user },
+                        { expiresIn: '24h' }
+                      );
+                    
+                    return {
+                        ...user,
+                        accessToken
+                    }
+                } else {
+                    throw new Error('Incorrect password')
+                    
+                }
+
+            },
+        }),  
     ],
-    pages: {
-        signIn: '/login'
-    },
     callbacks: {
-        async jwt({token, user}){
-            if(user){
-                token.accessToken = user.accessToken
-                token._id = user._id
-            }
-
-            return token
-        },
-        async session({session, token}){
-            if(token){
-                session.user._id = token._id
-                session.user.accessToken = token.accessToken
-            }
-
-            return session
+        
+        async jwt({ token, user, account }) {
+          if (user) {
+            token.accessToken = user.accessToken;
+            token.id = user.id
+          }
+          if (account) {
+            const accessToken = signJwtToken(
+                 user,
+                { expiresIn: '24h' }
+              );
+            token.accessToken = accessToken;
         }
-    }
-})
+          return token;
+        },
+        async session({ session, token }) {
+          if (token) {
+            session.user.accessToken = token.accessToken;
+            session.user.id = token.id;
+            
+          }
+          
+          return session;
+        },
+      },
+    secret: process.env.JWT_SECRET,
+    session: {
+        strategy: "jwt",
+    },
+}
 
-export {handler as GET, handler as POST}
+const handler = NextAuth(authOptions)
+export { handler as GET, handler as POST}

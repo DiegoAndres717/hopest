@@ -12,8 +12,8 @@ export function signJwtToken(payload, options = {}) {
 export function verifyJwtToken(token) {
     try {
         const secret = process.env.JWT_SECRET;
-        const payload = jwt.verify(token, secret);
-        return payload;
+        const decoded = jwt.verify(token, secret);
+        return decoded;
     } catch (error) {
         console.error(error);
         return null;

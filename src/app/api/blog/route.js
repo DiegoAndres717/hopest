@@ -1,21 +1,22 @@
-import db from "@/libs/db";
-import { verifyJwtToken, verifyToken } from '@/libs/jwt'
-import Blog from "@/models/Blog";
+import prismadb from '../../../libs/prismadb'
+import { verifyJwtToken } from '@/libs/jwt'
+
 
 export async function GET(req) {
-    await db.connect()
-
     try {
-        const blogs = await Blog.find({}).limit(16).populate("authorId")
+        const blogs = await prismadb.blog.findMany({
+            include: {
+                author: true
+            }
+        })
+        
         return new Response(JSON.stringify(blogs), { status: 200 })
     } catch (error) {
+        console.error(error)
         return new Response(JSON.stringify(null), { status: 500 })
     }
 }
-
 export async function POST(req) {
-    await db.connect()
-
     const accessToken = req.headers.get("authorization")
     const token = accessToken.split(' ')[1]
 
@@ -27,10 +28,21 @@ export async function POST(req) {
 
     try {
         const body = await req.json()
-        const newBlog = await Blog.create(body)
-
+        
+        const newBlog = await prismadb.blog.create({
+            data: {
+                title: body.title,
+                desc: body.desc,
+                images: body.images,
+                category: body.category,
+                authorId: body.authorId,
+                likes: []
+            }
+        })
+       
         return new Response(JSON.stringify(newBlog), { status: 201 })
     } catch (error) {
+        console.error(error)
         return new Response(JSON.stringify(null), { status: 500 })
     }
 }
