@@ -8,8 +8,8 @@ import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const { data: session } = useSession();
+  
   const currentPath = usePathname();
-
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -45,7 +45,7 @@ const Navbar = () => {
             </label>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-40"
+              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-40 z-50"
             >
               <li>
                 <Link href={"/"}>Homepage</Link>
@@ -76,7 +76,7 @@ const Navbar = () => {
               </Link>
             )}
             {currentPath !== "/login" && (
-              <button onClick={() => signIn()} className="btn btn-success mx-4">
+              <button onClick={()=> window.location.replace('/login')} className="btn btn-success mx-4">
                 Login
               </button>
             )}

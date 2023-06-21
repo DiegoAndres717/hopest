@@ -22,7 +22,7 @@ const Edit = (ctx) => {
   useEffect(() => {
     async function fetchBlog() {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BLOG_URL}/api/blog/${ctx.params.id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/blog/${ctx.params.id}`
       );
 
       const blog = await res.json();
@@ -68,7 +68,7 @@ const Edit = (ctx) => {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BLOG_URL}/api/blog/${ctx.params.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/blog/${ctx.params.id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -85,7 +85,7 @@ const Edit = (ctx) => {
 
       const blog = await res.json();
 
-      router.push(`/blog/${blog?._id}`);
+      router.push(`/blog/${blog?.id}`);
     } catch (error) {
       console.log(error);
     }
@@ -154,7 +154,7 @@ const Edit = (ctx) => {
               style={{ display: "none" }}
               onChange={(e) => setPhoto(e.target.files[0])}
             />
-            <button className={classes.createBlog}>Edit</button>
+            <button className={classes.createBlog}>Actualizar</button>
           </form>
         </div>
         <ToastContainer />
