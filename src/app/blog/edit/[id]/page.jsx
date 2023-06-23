@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import { AiOutlineFileImage } from "react-icons/ai";
-import { redirectIfUnauthenticated, renderLoadingModal } from "../../../../helpers/helper";
+import { redirectIfUnauthenticated, renderLoadingModal } from "../../../../helper";
 
 const Edit = (ctx) => {
   const CLOUD_NAME = "deumm0pp5";
