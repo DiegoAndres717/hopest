@@ -3,7 +3,7 @@ import BlogCard from "@/components/blogCard/BlogCard";
 import classes from "./page.module.css";
 import { useEffect, useState } from "react";
 
-export default async function Home() {
+export default function Home() {
   const [blogs, setBlogs] = useState([]);
   useEffect(() => {
     async function fetchBlog() {

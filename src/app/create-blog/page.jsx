@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSession } from "next-auth/react";
-import { redirectIfUnauthenticated, renderLoadingModal } from "@/helpers/helper";
+import { redirectIfUnauthenticated, renderLoadingModal } from "../../helper";
 
 const CreateBlog = () => {
   const CLOUD_NAME = "deumm0pp5";
