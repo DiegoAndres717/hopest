@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import { AiOutlineFileImage } from "react-icons/ai";
-import LoadingModal from '../../../components/modals/LoadingModal'
+import { redirectIfUnauthenticated, renderLoadingModal } from "../../../../helpers/helper";
 
 const Edit = (ctx) => {
   const CLOUD_NAME = "deumm0pp5";
@@ -34,14 +34,10 @@ const Edit = (ctx) => {
     fetchBlog();
   }, [ctx.params.id]);
 
-  if (status === "loading") {
-    return <LoadingModal />
-  }
+  const loadinModal = renderLoadingModal(status);
+  if(loadinModal) return loadinModal
 
-  if (status === "unauthenticated") {
-    router.push('/')
-    return 
-  }
+ if(redirectIfUnauthenticated(status, router)) return;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

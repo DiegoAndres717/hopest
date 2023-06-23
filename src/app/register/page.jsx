@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import axios from 'axios'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RegisterForm from "../components/forms/RegisterForm";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
   const [data, setData] = useState({
@@ -13,6 +14,7 @@ const Register = () => {
     password: '',
   });
   const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter()
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +25,7 @@ const Register = () => {
     try {
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, data);
       toast.success('Usuario registrado con éxito!');
-      window.location.replace('/login');
+      router.push('/login');
     } catch (error) {
       if (error.response && error.response.data) {
         toast.error(error.response.data);

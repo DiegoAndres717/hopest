@@ -1,13 +1,15 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
 import logo from "../../../public/images/logo.jpg";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const { data: session } = useSession();
+  const router = useRouter();
   
   const currentPath = usePathname();
   return (
@@ -69,15 +71,15 @@ const Navbar = () => {
             </ul>
           </div>
         ) : (
-          <div>
+          <div className="flex justify-end w-full text-center mx-auto">
             {currentPath !== "/register" && (
               <Link href={"/register"}>
-                <button className="btn btn-warning">Register</button>
+                <button className="btn btn-warning text-xs sm:text-lg h-12 p-1 mr-1 capitalize">Registrarse</button>
               </Link>
             )}
             {currentPath !== "/login" && (
-              <button onClick={()=> window.location.replace('/login')} className="btn btn-success mx-4">
-                Login
+              <button onClick={()=> router.push('/login')} className="btn btn-success text-xs sm:text-lg h-12 p-2 capitalize">
+                Ingresar
               </button>
             )}
           </div>
