@@ -2,11 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { AiOutlineFileImage } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getSession, useSession } from "next-auth/react";
-import LoadingModal from "../components/modals/LoadingModal";
+import { useSession } from "next-auth/react";
+import { redirectIfUnauthenticated, renderLoadingModal } from "@/helpers/helper";
 
 const CreateBlog = () => {
   const CLOUD_NAME = "deumm0pp5";
@@ -22,18 +21,10 @@ const CreateBlog = () => {
   
   const router = useRouter();
 
-  if (status === "loading") {
-    return <LoadingModal />;
-  }
+  const loadinModal = renderLoadingModal(status);
+  if(loadinModal) return loadinModal
 
-  if (!session) {
-    router.push("/");
-    return;
-  }
-
-  if (status === "unauthenticated") {
-    return <p className={'w-full text-center mt-20 text-4xl font-bold'}>Access Denied</p>;
-  }
+  if(redirectIfUnauthenticated(status, router)) return;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

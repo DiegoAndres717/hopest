@@ -16,11 +16,11 @@ export default async function Home() {
     }
     fetchBlog();
   }, []);
-
+  
   return (
     <div className={"flex flex-col justify-center items-center"}>
       {blogs?.length > 0 && (
-        <h2 className="text-5xl text-blue-950">Sitios - Hopest</h2>
+        <h2 className="text-3xl sm:text-5xl text-blue-950">Sitios - Hopest</h2>
       )}
       <div
         className={

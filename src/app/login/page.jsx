@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { signIn, useSession, getSession } from "next-auth/react";
 import AuthSocialButton from "../components/AuthSocialButton";
 import LoadingModal from "../components/modals/LoadingModal";
+import { redirectAuthenticate } from "@/helpers/helper";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -19,10 +20,7 @@ const Login = () => {
   const router = useRouter();
   
   useEffect(() => {
-    if (status === "authenticated") {
-      router.push('/')
-      return 
-    }
+    if(redirectAuthenticate(status, router)) return;
     
     setIsLoadingPage(false);
   }, [router, status]);

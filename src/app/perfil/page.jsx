@@ -1,14 +1,18 @@
 'use client'
+
 import { useSession } from "next-auth/react";
-import LoadingModal from '../components/modals/LoadingModal'
+import { redirectIfUnauthenticated, renderLoadingModal } from "@/helpers/helper";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Profile = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter()
 
-  if (!session) {
-    return <LoadingModal />
-  }
+  if(redirectIfUnauthenticated(status, router)) return;
+
+  const loadinModal = renderLoadingModal(status);
+  if(loadinModal) return loadinModal
 
   return (
     <div className="flex flex-col items-center">
