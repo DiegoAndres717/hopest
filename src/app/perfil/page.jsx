@@ -1,9 +1,10 @@
 'use client'
 
 import { useSession } from "next-auth/react";
-import { redirectIfUnauthenticated, renderLoadingModal } from "../../utils/index.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import redirectIfUnauthenticated from '../hooks/redirectIfUnauthenticated'
+import { renderLoadingModal } from '../hooks/renderLoadingModal'
 
 const Profile = () => {
   const { data: session, status } = useSession();

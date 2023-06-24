@@ -14,7 +14,8 @@ import { useRouter } from "next/navigation";
 import Comment from "@/components/comment/Comment";
 import BlogLayout from "../layout";
 import LoadingModal from "@/app/components/modals/LoadingModal";
-import { redirectIfUnauthenticated, slideHandlers } from "../../../utils/index.js";
+import redirectIfUnauthenticated from '../../hooks/redirectIfUnauthenticated'
+import { slideHandlers } from "../../hooks/slideHandlers";
 
 const BlogDetails = (ctx) => {
   const [blogDetails, setBlogDetails] = useState("");

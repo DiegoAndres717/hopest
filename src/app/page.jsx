@@ -1,7 +1,7 @@
 "use client";
 import BlogCard from "@/components/blogCard/BlogCard";
-import classes from "./page.module.css";
 import { useEffect, useState } from "react";
+import SkeletonHome from "./components/skeletons/SkeletonHome";
 
 export default function Home() {
   const [blogs, setBlogs] = useState([]);
@@ -24,13 +24,13 @@ export default function Home() {
       )}
       <div
         className={
-          "grid sm:grid-cols-1 md:grid-cols-2 auto-cols-min justify-center items-center gap-6 mt-20"
+          "grid grid-cols-1 auto-cols-min justify-center items-center gap-6 mt-20"
         }
       >
         {blogs?.length > 0 ? (
           blogs.map((blog) => <BlogCard key={blog.id} blog={blog} />)
         ) : (
-          <h3 className={classes.noBlogs}>No blogs are currently in the</h3>
+          <SkeletonHome />
         )}
       </div>
     </div>
