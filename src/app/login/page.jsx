@@ -9,7 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { signIn, useSession, getSession } from "next-auth/react";
 import AuthSocialButton from "../components/AuthSocialButton";
 import LoadingModal from "../components/modals/LoadingModal";
-import { redirectAuthenticate } from "../../utils/index.js";
+import redirectAuthenticate from '../hooks/redirectAuthenticate.js'
+
 
 const Login = () => {
   const [email, setEmail] = useState("");

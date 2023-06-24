@@ -6,7 +6,7 @@ import logo from "../../../public/images/logo.jpg";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import SkeletonNav from '../skeletons/SkeletonNav'
+import SkeletonNav from "../../app/components/skeletons/SkeletonNav";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -15,7 +15,7 @@ const Navbar = () => {
   const currentPath = usePathname();
   return (
     <>
-    {status !== "loading" ? (
+      {status !== "loading" ? (
         <div className="navbar bg-base-100">
           <div className="navbar-start">
             <Link className="/" href={"/"}>
@@ -42,7 +42,7 @@ const Navbar = () => {
                 <label tabIndex={0} className="btn btn-ghost btn-circle">
                   <Image
                     className="rounded-full"
-                    src={`${session?.user?.image || '/login.webp'}`}
+                    src={`${session?.user?.image || "/login.webp"}`}
                     width={50}
                     height={50}
                     alt="Logo"
@@ -77,11 +77,16 @@ const Navbar = () => {
               <div className="flex justify-end w-full text-center mx-auto">
                 {currentPath !== "/register" && (
                   <Link href={"/register"}>
-                    <button className="btn btn-warning text-xs sm:text-lg h-12 p-1 mr-1 capitalize">Registrarse</button>
+                    <button className="btn btn-warning text-xs sm:text-lg h-12 p-1 mr-1 capitalize">
+                      Registrarse
+                    </button>
                   </Link>
                 )}
                 {currentPath !== "/login" && (
-                  <button onClick={()=> router.push('/login')} className="btn btn-success text-xs sm:text-lg h-12 p-2 capitalize">
+                  <button
+                    onClick={() => router.push("/login")}
+                    className="btn btn-success text-xs sm:text-lg h-12 p-2 capitalize"
+                  >
                     Ingresar
                   </button>
                 )}
@@ -89,9 +94,9 @@ const Navbar = () => {
             )}
           </div>
         </div>
-    ) : (
-      <SkeletonNav />
-    )}
+      ) : (
+        <SkeletonNav />
+      )}
     </>
   );
 };
